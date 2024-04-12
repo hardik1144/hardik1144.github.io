@@ -79,57 +79,78 @@
         <!-- Modal content -->
     </div>
 
-    <script>$(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-});
+    <script src="script.js"></script>
+    <script>document.getElementById('calculate').addEventListener('click', function() {
+    let grossIncome = parseFloat(document.getElementById('grossIncome').value);
+    let extraIncome = parseFloat(document.getElementById('extraIncome').value);
+    let deductions = parseFloat(document.getElementById('deductions').value);
+    let ageGroup = document.getElementById('ageGroup').value;
 
-function calculateTax() {
-    let grossIncome = parseFloat($('#grossIncome').val());
-    let extraIncome = parseFloat($('#extraIncome').val());
-    let deductions = parseFloat($('#deductions').val());
-    let ageGroup = $('#age').val();
+    let errorPresent = false;
 
-    let totalIncome = grossIncome + extraIncome - deductions;
-    let taxRate = 0;
-    let taxDue = 0;
-
-    if (totalIncome > 800000) {
-        switch(ageGroup) {
-            case 'under40':
-                taxRate = 0.30;
-                break;
-            case 'between40and60':
-                taxRate = 0.40;
-                break;
-            case '60plus':
-                taxRate = 0.10;
-                break;
-            default:
-                $('#age').addClass('invalid');
-                $('.error-icon').show();
-                return;
+    // Reset error icons and inputs
+    ['grossIncome', 'extraIncome', 'deductions'].forEach(id => {
+        if (isNaN(parseFloat(document.getElementById(id).value))) {
+            document.getElementById(id + 'Error').style.display = 'inline';
+            document.getElementById(id).classList.add('invalid');
+            errorPresent = true;
+        } else {
+            document.getElementById(id + 'Error').style.display = 'none';
+            document.getElementById(id).classList.remove('invalid');
         }
-        taxDue = taxRate * (totalIncome - 800000);
-    }
+    });
 
-    $('#taxResult').text(`Total Tax Due: ₹${taxDue.toLocaleString()}`);
-    $('#resultModal').modal('show');
-}
-
-$('input, select').on('change', function () {
-    $(this).removeClass('invalid');
-    $('.error-icon').hide();
-});
-
-$('input[type="number"]').on('input', function () {
-    if (isNaN(parseFloat($(this).val()))) {
-        $(this).addClass('invalid');
-        $(this).next('.error-icon').show();
+    if (ageGroup === "") {
+        document.getElementById('ageGroupError').style.display = 'inline';
+        document.getElementById('ageGroup').classList.add('invalid');
+        errorPresent = true;
     } else {
-        $(this).removeClass('invalid');
-        $(this).next('.error-icon').hide();
+        document.getElementById('ageGroupError').style.display = 'none';
+        document.getElementById('ageGroup').classList.remove('invalid');
     }
-});
-</script>
+
+    if (!errorPresent) {
+        let totalIncome = grossIncome + extraIncome - deductions;
+        let tax = 0;
+
+        if (totalIncome > 800000) { // Amount over 8 lakhs in rupees
+            switch(ageGroup) {
+                case '<40':
+                    tax = (totalIncome - 800000) * 0.30;
+                    break;
+                case '>=40 & <60':
+                    tax = (totalIncome - 800000) * 0.40;
+                    break;
+                case '>=60':
+                    tax = (totalIncome - 800000) * 0.10;
+                    break;
+            }
+        }
+
+        let incomeAfterTax = totalIncome - tax;
+
+        // Display result in a modal
+        let resultModal = document.getElementById('resultModal');
+        resultModal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>Your total income after tax deductions is: ₹${incomeAfterTax.toLocaleString()}</p>
+            </div>
+        `;
+        resultModal.style.display = "block";
+
+        // Close the modal when the user clicks on <span> (x)
+        document.querySelector('.close').onclick = function() {
+            resultModal.style.display = "none";
+        };
+
+        // Also close the modal if the user clicks anywhere outside of the modal content
+        window.onclick = function(event) {
+            if (event.target == resultModal) {
+                resultModal.style.display = "none";
+            }
+        };
+    }
+});</script>
 </body>
 </html>
