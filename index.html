@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Tax Calculator</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Tax Calculator</h2>
+        <form id="taxForm">
+            <div class="form-group">
+                <label for="grossIncome">Gross Annual Income:</label>
+                <input type="number" class="form-control" id="grossIncome">
+                <span class="error-icon" data-toggle="tooltip" title="Invalid Input"></span>
+            </div>
+            <div class="form-group">
+                <label for="extraIncome">Extra Income:</label>
+                <input type="number" class="form-control" id="extraIncome">
+                <span class="error-icon" data-toggle="tooltip" title="Invalid Input"></span>
+            </div>
+            <div class="form-group">
+                <label for="deductions">Deductions:</label>
+                <input type="number" class="form-control" id="deductions">
+                <span class="error-icon" data-toggle="tooltip" title="Invalid Input"></span>
+            </div>
+            <div class="form-group">
+                <label for="age">Age Group:</label>
+                <select class="form-control" id="age">
+                    <option value="">Select Age Group</option>
+                    <option value="under40"><40</option>
+                    <option value="between40and60">≥ 40 & < 60</option>
+                    <option value="60plus">≥ 60</option>
+                </select>
+                <span class="error-icon" data-toggle="tooltip" title="Age Group is required"></span>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="calculateTax()">Submit</button>
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">Tax Calculation Result</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="taxResult"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
