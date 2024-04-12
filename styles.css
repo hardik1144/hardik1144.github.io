@@ -1,0 +1,12 @@
+.error-icon {
+    display: none;
+    color: red;
+    position: absolute;
+    right: 10px;
+    top: 35px;
+    cursor: pointer;
+}
+
+input.invalid, select.invalid {
+    border-color: red;
+}
