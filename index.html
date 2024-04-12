@@ -3,29 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <title>Tax Calculator</title>
     <style>
-        /* Custom styling */
-        .container {
-            margin-top: 50px;
-        }
-
-        .info-icon {
-            margin-left: 5px;
-            font-size: 20px;
-            cursor: help;
-            color: #007bff;
-        }
-
-        .error-icon {
-            color: red;
-            margin-left: 10px;
-            font-size: 20px;
-            display: inline;
-        }
-
+        /* Additional styling for tooltip icons */
         .tooltip {
             position: relative;
             display: inline-block;
@@ -33,17 +14,17 @@
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 180px;
+            width: 120px;
             background-color: black;
-            color: white;
+            color: #fff;
             text-align: center;
             border-radius: 6px;
-            padding: 5px;
+            padding: 5px 0;
             position: absolute;
             z-index: 1;
             bottom: 100%;
             left: 50%;
-            margin-left: -90px;
+            margin-left: -60px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -52,121 +33,52 @@
             visibility: visible;
             opacity: 1;
         }
+
+        .info-icon {
+            margin-left: 5px;
+            font-size: 16px;
+            cursor: help;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mb-4">Tax Calculator</h1>
-        <form>
-            <div class="mb-3">
-                <label for="grossIncome" class="form-label">Gross Annual Income:</label>
-                <input type="number" class="form-control" id="grossIncome">
-                <span class="tooltip"><span class="info-icon">&#x3F;</span><span class="tooltiptext">Total yearly income before any deductions.</span></span>
-                <span id="grossIncomeError" class="error-icon" style="display:none;">!</span>
-            </div>
-            <div class="mb-3">
-                <label for="extraIncome" class="form-label">Extra Income:</label>
-                <input type="number" class="form-control" id="extraIncome">
-                <span class="tooltip"><span class="info-icon">&#x3F;</span><span class="tooltiptext">Any additional income such as bonuses, freelance work, etc.</span></span>
-                <span id="extraIncomeError" class="error-icon" style="display:none;">!</span>
-            </div>
-            <div class="mb-3">
-                <label for="deductions" class="form-label">Deductions:</label>
-                <input type="number" class="form-control" id="deductions">
-                <span class="tooltip"><span class="info-icon">&#x3F;</span><span class="tooltiptext">Deductible expenses such as retirement savings, health insurance, etc.</span></span>
-                <span id="deductionsError" class="error-icon" style="display:none;">!</span>
-            </div>
-            <div class="mb-3">
-                <label for="ageGroup" class="form-label">Age Group:</label>
-                <select class="form-select" id="ageGroup">
-                    <option value="">Select your age group</option>
-                    <option value="<40">Less than 40</option>
-                    <option value=">=40 & <60">40 to 59</option>
-                    <option value=">=60">60 and older</option>
-                </select>
-                <span class="tooltip"><span class="info-icon">&#x3F;</span><span class="tooltiptext">Select your current age group.</span></span>
-                <span id="ageGroupError" class="error-icon" style="display:none;">!</span>
-            </div>
-            <button type="button" class="btn btn-primary" id="calculate">Calculate</button>
-        </form>
-        <div id="resultModal" class="modal" style="display:none;">
-            <!-- Modal content -->
+    <h1>Tax Calculator</h1>
+    <form>
+        <div>
+            <label for="grossIncome">Gross Annual Income:</label>
+            <input type="number" id="grossIncome">
+            <span class="tooltip"><span class="info-icon">&#x3F;</span><span class="tooltiptext">Total yearly income before any deductions.</span></span>
+            <span id="grossIncomeError" class="error-icon" style="display:none;">!</span>
         </div>
+        <div>
+            <label for="extraIncome">Extra Income:</label>
+            <input type="number" id="extraIncome">
+            <span class="tooltip"><span class="info-icon">&#x3F;</span><span class="tooltiptext">Any additional income such as bonuses, freelance work, etc.</span></span>
+            <span id="extraIncomeError" class="error-icon" style="display:none;">!</span>
+        </div>
+        <div>
+            <label for="deductions">Deductions:</label>
+            <input type="number" id="deductions">
+            <span class="tooltip"><span class="info-icon">&#x3F;</span><span class="tooltiptext">Deductible expenses such as retirement savings, health insurance, etc.</span></span>
+            <span id="deductionsError" class="error-icon" style="display:none;">!</span>
+        </div>
+        <div>
+            <label for="ageGroup">Age Group:</label>
+            <select id="ageGroup">
+                <option value="">Select your age group</option>
+                <option value="<40">Less than 40</option>
+                <option value=">=40 & <60">40 to 59</option>
+                <option value=">=60">60 and older</option>
+            </select>
+            <span class="tooltip"><span class="info-icon">&#x3F;</span><span class="tooltiptext">Select your current age group.</span></span>
+            <span id="ageGroupError" class="error-icon" style="display:none;">!</span>
+        </div>
+        <button type="button" id="calculate">Calculate</button>
+    </form>
+    <div id="resultModal" class="modal" style="display:none;">
+        <!-- Modal content -->
     </div>
-    <!-- Bootstrap JS with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>document.getElementById('calculate').addEventListener('click', function() {
-    let grossIncome = parseFloat(document.getElementById('grossIncome').value);
-    let extraIncome = parseFloat(document.getElementById('extraIncome').value);
-    let deductions = parseFloat(document.getElementById('deductions').value);
-    let ageGroup = document.getElementById('ageGroup').value;
 
-    let errorPresent = false;
-
-    // Reset error icons and inputs
-    ['grossIncome', 'extraIncome', 'deductions'].forEach(id => {
-        if (isNaN(parseFloat(document.getElementById(id).value))) {
-            document.getElementById(id + 'Error').style.display = 'inline';
-            document.getElementById(id).classList.add('invalid');
-            errorPresent = true;
-        } else {
-            document.getElementById(id + 'Error').style.display = 'none';
-            document.getElementById(id).classList.remove('invalid');
-        }
-    });
-
-    if (ageGroup === "") {
-        document.getElementById('ageGroupError').style.display = 'inline';
-        document.getElementById('ageGroup').classList.add('invalid');
-        errorPresent = true;
-    } else {
-        document.getElementById('ageGroupError').style.display = 'none';
-        document.getElementById('ageGroup').classList.remove('invalid');
-    }
-
-    if (!errorPresent) {
-        let totalIncome = grossIncome + extraIncome - deductions;
-        let tax = 0;
-
-        if (totalIncome > 800000) { // Amount over 8 lakhs in rupees
-            switch(ageGroup) {
-                case '<40':
-                    tax = (totalIncome - 800000) * 0.30;
-                    break;
-                case '>=40 & <60':
-                    tax = (totalIncome - 800000) * 0.40;
-                    break;
-                case '>=60':
-                    tax = (totalIncome - 800000) * 0.10;
-                    break;
-            }
-        }
-
-        let incomeAfterTax = totalIncome - tax;
-
-        // Display result in a modal
-        let resultModal = document.getElementById('resultModal');
-        resultModal.innerHTML = `
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <p>Your total income after tax deductions is: ₹${incomeAfterTax.toLocaleString()}</p>
-            </div>
-        `;
-        resultModal.style.display = "block";
-
-        // Close the modal when the user clicks on <span> (x)
-        document.querySelector('.close').onclick = function() {
-            resultModal.style.display = "none";
-        };
-
-        // Also close the modal if the user clicks anywhere outside of the modal content
-        window.onclick = function(event) {
-            if (event.target == resultModal) {
-                resultModal.style.display = "none";
-            }
-        };
-    }
-});
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
